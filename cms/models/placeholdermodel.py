@@ -44,6 +44,15 @@ class Placeholder(models.Model):
         Generic method to check the permissions for a request for a given key,
         the key can be: 'add', 'change' or 'delete'.
         """
+
+        #######################################################################
+        #### Override for Osborne Clarke to resolve publishing add placeholder#
+        #### permissions issue                                                #
+        #######################################################################
+        return True
+
+        #######################################################################
+        
         if request.user.is_superuser:
             return True
         found = False
