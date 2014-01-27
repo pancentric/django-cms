@@ -1,5 +1,5 @@
 {% extends "admin/change_form.html" %}
-{% load i18n admin_modify cms_js_tags cms_admin %}
+{% load i18n l10n admin_modify cms_js_tags cms_admin %}
 
 {% block title %}{% trans "Change a page" %}{% endblock %}
 
@@ -20,9 +20,9 @@ jQuery(document).ready(function ($) {
 			// backend admin
 			{% if deleted %}
 			// delete plugin selector if cancelled before adding content
-        	window.parent.removed_cancelled_plugin({{ plugin_id }});
+        	window.parent.removed_cancelled_plugin({{ plugin_id|unlocalize }});
         	{% endif %}
-        parent.hide_iframe({{ plugin_id }}, {% javascript_string %}{{ type }}{% end_javascript_string %}, {% javascript_string %}{{ name }}{% end_javascript_string %}, {% javascript_string %}
+        parent.hide_iframe({{ plugin_id|unlocalize }}, {% javascript_string %}{{ type }}{% end_javascript_string %}, {% javascript_string %}{{ name }}{% end_javascript_string %}, {% javascript_string %}
         	{% if cancel %}{% trans "Your changes to this plugin have not been saved." %}{% else %}{% trans "Plugin saved successfully." %}{% endif %}
         	{% end_javascript_string %});
         	
@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
 			setTimeout(function () { window.parent.CMS.API.Helpers.reloadBrowser(); }, 1000);
 		}
 	} else {
-        opener.dismissEditPluginPopup(window, {% javascript_string %}{{ plugin_id }}{% end_javascript_string %}, {% javascript_string %}{{ icon }}{% end_javascript_string %}, {% javascript_string %}{{ alt }}{% end_javascript_string %});
+        opener.dismissEditPluginPopup(window, {% javascript_string %}{{ plugin_id|unlocalize }}{% end_javascript_string %}, {% javascript_string %}{{ icon }}{% end_javascript_string %}, {% javascript_string %}{{ alt }}{% end_javascript_string %});
 	}
 });
 //]]>
