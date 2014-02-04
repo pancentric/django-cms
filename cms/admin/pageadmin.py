@@ -1124,7 +1124,7 @@ class PageAdmin(ModelAdmin):
         parent = None
         # page add-plugin
         if page:
-            language = request.POST['language'] or get_language_from_request(request)
+            language = request.POST.get('language') or get_language_from_request(request)
             position = CMSPlugin.objects.filter(language=language, placeholder=placeholder).count()
             limits = placeholder_utils.get_placeholder_conf("limits", placeholder.slot, page.get_template())
             if limits:
