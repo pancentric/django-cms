@@ -55,16 +55,24 @@ def assign_plugins(request, placeholders, lang=None):
 
 
 def build_plugin_tree(plugin_list):
+    """
+    There have been numerous instances where the client has reported issues
+    adding plugins within pages, not just an inability but a false reporting
+    of the number of allowed plugins for a placeholder etc.
+
+    The patch below is taken from this issue
+    https://github.com/Tyrdall/django-cms/commit/ec1e04c29269cd422a067692e53f940370bb52e9
+    """
     root = []
     cache = {}
     for plugin in plugin_list:
         plugin.child_plugin_instances = []
         cache[plugin.pk] = plugin
-        if not plugin.parent_id:
-            root.append(plugin)
-        else:
+        if plugin.parent_id and cache.get(plugin.parent_id):
             parent = cache[plugin.parent_id]
             parent.child_plugin_instances.append(plugin)
+        else:
+            root.append(plugin)
     root.sort(key=lambda x: x.position)
     for plugin in plugin_list:
         if plugin.child_plugin_instances and len(plugin.child_plugin_instances) > 1:
