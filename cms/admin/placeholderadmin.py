@@ -183,6 +183,11 @@ class PlaceholderAdmin(ModelAdmin):
             if not parent_id: # if we get neither a placeholder nor a parent, bail out
                 raise Http404
             parent = get_object_or_404(CMSPlugin, pk=parent_id)
+            # although the language of this plugin has already been defined,
+            # I am making the assumption that any plugins with parent plugins
+            # want to inherit the language of the parent. This is what the
+            # following language override does
+            language = parent.language
             placeholder = parent.placeholder
 
         # check add permissions on placeholder
