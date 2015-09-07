@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib
 import re
+import urlparse
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -23,10 +24,15 @@ def use_draft(request):
     """
     Decision function to determine if the drafts or public pages should be used
     Public models are used unless looking at preview or edit versions of the page.
+
+    IMPORTANT: A patch to this function ALWAYS allows draft pages to be viewed,
+    regardless of whether a user is authenticated. This is because the
+    Bluefin setup doesn't allows sites to be logged into (every '/admin'
+    request is redirected to 'cms.bluefingroup.com/admin'.
     """
     preview_draft = 'preview' in request.GET and 'draft' in request.GET
     edit_mode = 'edit' in request.GET
-    authenticated = request.user.is_authenticated() and request.user.is_staff
+    authenticated = preview_draft
     return (preview_draft or edit_mode) and authenticated
 
 
@@ -117,16 +123,16 @@ def get_page_from_path(path, preview=False, draft=False):
 def get_page_from_request(request, use_path=None):
     """
     Gets the current page from a request object.
-    
+
     URLs can be of the following form (this should help understand the code):
     http://server.whatever.com/<some_path>/"pages-root"/some/page/slug
-    
+
     <some_path>: This can be anything, and should be stripped when resolving
-        pages names. This means the CMS is not installed at the root of the 
+        pages names. This means the CMS is not installed at the root of the
         server's URLs.
     "pages-root" This is the root of Django urls for the CMS. It is, in essence
         an empty page slug (slug == '')
-        
+
     The page slug can then be resolved to a Page model object
     """
 
