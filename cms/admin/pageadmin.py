@@ -1039,7 +1039,7 @@ class PageAdmin(ModelAdmin):
             attrs += "&language=" + language
 
         url = page.get_absolute_url(language) + attrs
-        site = current_site(request)
+        site = Site.objects.get_current()
 
         if not site == page.site:
             url = "http%s://%s%s" % ('s' if request.is_secure() else '',
