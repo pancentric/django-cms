@@ -32,8 +32,7 @@ def use_draft(request):
     """
     preview_draft = 'preview' in request.GET and 'draft' in request.GET
     edit_mode = 'edit' in request.GET
-    authenticated = preview_draft
-    return (preview_draft or edit_mode) and authenticated
+    return preview_draft or edit_mode
 
 
 def get_page_queryset(request=None):
