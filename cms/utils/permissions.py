@@ -268,8 +268,8 @@ def get_user_sites_queryset(user):
     
     if user.is_superuser:
         return qs
-    
-    global_ids = GlobalPagePermission.objects.with_user(user).filter(
+
+    global_ids = GlobalPagePermission.objects.filter(user=user).filter(
         Q(can_add=True) | Q(can_change=True)
     ).values_list('id', flat=True)
     
