@@ -166,7 +166,6 @@ def get_page_from_request(request, use_path=None):
         if path.endswith("/"):
             path = path[:-1]
 
-    import code;code.interact(local=locals())
     if preview and draft:
         site = None
         site_id = request.session.get('cms_admin_site')
