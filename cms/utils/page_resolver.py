@@ -105,16 +105,20 @@ def get_page_queryset_from_path(path, preview=False, draft=False, site=None):
     return pages
 
 
-def get_page_from_path(path, preview=False, draft=False):
+def get_page_from_path(path, preview=False, draft=False, site=None):
     """ Resolves a url path to a single page object.
     Raises exceptions is page does not exist or multiple pages are found
     """
-    page_qs = get_page_queryset_from_path(path, preview, draft)
+    page_qs = get_page_queryset_from_path(path, preview, draft, site=site)
     if page_qs is not None:
         if isinstance(page_qs, Page):
             return page_qs
+        # We'll need to fix this if they have mutiple drafts with the same title
         try:
-            page = page_qs.get()
+            if len(page_qs) > 1:
+                page = page_qs[0]
+            else:
+                page = page_qs.get()
         except Page.DoesNotExist:
             return None
         return page
@@ -162,7 +166,14 @@ def get_page_from_request(request, use_path=None):
         if path.endswith("/"):
             path = path[:-1]
 
-    page = get_page_from_path(path, preview, draft)
+    if preview and draft:
+        site = None
+        site_id = request.session['cms_admin_site']
+        if site_id:
+            site = Site.objects.get(id=site_id)
+        page = get_page_from_path(path, preview, draft, site=site)
+    else:
+        page = get_page_from_path(path, preview, draft)
     if draft and page and not page.has_change_permission(request):
         page = get_page_from_path(path, preview, draft=False)
 
