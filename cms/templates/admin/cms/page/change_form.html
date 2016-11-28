@@ -81,7 +81,7 @@
   <ul class="object-tools">
 	{% if can_publish %}
 	<li><a href="publish/" class="publishlink">{% trans "Publish draft" %}</a></li>
-	<li><a href="preview/?language={{ language }}" class="previewdraftlink">{% trans "Preview draft" %}</a></li>
+    <li><a href="{% if not page.published %}{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{ page.get_absolute_url }}?preview=1&draft=1{% else %}preview/?language={{ language }}{% endif %}" class="previewdraftlink">{% trans "Preview draft" %}</a></li>
 	{% endif %}
 	{% if can_change and page.published and page.is_dirty %}<li><a href="revert/" class="revertlink">{% trans "Revert to public" %}</a></li>{% endif %}
 	<li><a href="history/" class="historylink">{% trans "History" %}</a></li>
