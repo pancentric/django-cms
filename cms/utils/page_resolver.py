@@ -168,13 +168,14 @@ def get_page_from_request(request, use_path=None):
 
     if preview and draft:
         site = None
-        site_id = request.session.get('cms_admin_site')
-        if site_id:
-            site = Site.objects.get(id=site_id)
-        else:
+        if settings.DEBUG == False:
             if hasattr(settings, 'SITE_ID'):
                 site = Site.objects.get(id=settings.SITE_ID)
-        page = get_page_from_path(path, preview, draft, site=site)
+        else:
+            site_id = request.session.get('cms_admin_site')
+            if site_id:
+                site = Site.objects.get(id=site_id)
+            page = get_page_from_path(path, preview, draft, site=site)
     else:
         page = get_page_from_path(path, preview, draft)
     if draft and page and not page.has_change_permission(request):
